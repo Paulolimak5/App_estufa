@@ -15,3 +15,24 @@ For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 "# App_estufa" 
+
+Json de testes
+
+{
+    "by": "default",
+    "valid_key": true,
+    "results": {
+        "estufas": {
+            "id": 5,
+            "nome": "Estufa feijão",
+            "ppm": 15.56,
+            "ph": 5.66,
+            "temp": 5.6623,
+            "umidade": 0.56,
+            "iluminacao": true,
+            "bomba": true,
+            "cooler": true,
+            "nivel": true
+        }
+    }
+}
