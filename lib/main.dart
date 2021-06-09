@@ -4,8 +4,9 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
-const request1 = "https://api.hgbrasil.com/finance?format=json&key=7c432ef2";
-const request = "http://192.168.15.16:80/estufa/estufa.json";
+const request1 = "https://wcsgreenhouse.azurewebsites.net/Receita/consultar/1";
+//const request2 = "http://192.168.15.16:80/estufa/estufa.json";
+const request = "https://wcsgreenhouse.azurewebsites.net/Estufa/status/1";
 
 void main() async {
   print(await getData());
@@ -32,17 +33,14 @@ class Monitora extends StatefulWidget {
 
 
 class _MonitoraState extends State<Monitora> {
-  String nome;
-  int id;
-  double ppm;
-  double ph;
-  double temp;
-  double umidade;
-  bool iluminacao;
-  bool bomba;
-  bool cooler;
-  bool nivel;
 
+  bool iluminacao;
+  String hora;
+  int ph;
+  int ppm;
+  int temperatura;
+  String umidade;
+  String luz;
 
   @override
   Widget build(BuildContext context) {
@@ -61,88 +59,55 @@ class _MonitoraState extends State<Monitora> {
                 case ConnectionState.waiting:
                   return Center(
                       child: Text(
-                    "Carregando Dados...",
-                    style: TextStyle(color: Colors.green, fontSize: 25.0),
-                    textAlign: TextAlign.center,
-                  ));
+                        "Carregando Dados...",
+                        style: TextStyle(color: Colors.green, fontSize: 25.0),
+                        textAlign: TextAlign.center,
+                      ));
                 default:
                   if (snapshot.hasError) {
                     return Center(
                         child: Text(
-                      "Erro ao Carregar Dados!",
-                      style: TextStyle(color: Colors.green, fontSize: 25.0),
-                      textAlign: TextAlign.center,
-                    ));
+                          "Erro ao Carregar Dados!",
+                          style: TextStyle(color: Colors.green, fontSize: 25.0),
+                          textAlign: TextAlign.center,
+                        ));
                   } else {
-                    id = snapshot.data["results"]["estufas"]["id"];
-                    nome = snapshot.data["results"]["estufas"]["nome"];
-                    ppm = snapshot.data["results"]["estufas"]["ppm"];
-                    ph = snapshot.data["results"]["estufas"]["ph"];
-                    temp = snapshot.data["results"]["estufas"]["temp"];
-                    umidade = snapshot.data["results"]["estufas"]["umidade"];
-                    iluminacao =
-                        snapshot.data["results"]["estufas"]["iluminacao"];
-                    bomba = snapshot.data["results"]["estufas"]["bomba"];
-                    cooler = snapshot.data["results"]["estufas"]["cooler"];
-                    nivel = snapshot.data["results"]["estufas"]["nivel"];
+
+                    iluminacao = snapshot.data["iluminacao"];
+                    hora = snapshot.data["hora"];
+                    ph = snapshot.data["ph"];
+                    ppm = snapshot.data["ppm"];
+                    temperatura = snapshot.data["temperatura"];
+                    umidade = snapshot.data["humidade"];
+
+                    if(iluminacao == true){
+                      luz = "Ligada";
+                    }else{
+                      luz = "Desligada";
+                    }
+
 
                     return SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           Padding(padding: EdgeInsets.only(top: 30.0)),
-                          Text('$nome',
+                          Text("Estufa",
                               style: TextStyle(
                                   color: Colors.green, fontSize: 30.0),
                               textAlign: TextAlign.center),
                           Padding(padding: EdgeInsets.only(top: 40)),
-                          //Valor Id
                           Row(
                             children: <Widget>[
                               Padding(
                                   padding: EdgeInsets.only(
                                       left: 20.0, bottom: 35.0)),
-                              Text("Id: ",
+                              Text("Hora: ",
                                   style: TextStyle(
                                       color: Colors.green, fontSize: 25.0),
                                   textAlign: TextAlign.center),
-                              Text('$id', style: TextStyle(fontSize: 25.0)),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 20.0, bottom: 35.0)),
-                              Text("Nome: ",
-                                  style: TextStyle(
-                                      color: Colors.green, fontSize: 25.0),
-                                  textAlign: TextAlign.center),
-                              Text('$nome', style: TextStyle(fontSize: 25.0)),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 20.0, bottom: 35.0)),
-                              Text("PPM: ",
-                                  style: TextStyle(
-                                      color: Colors.green, fontSize: 25.0),
-                                  textAlign: TextAlign.center),
-                              Text('$ppm', style: TextStyle(fontSize: 25.0)),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 20.0, bottom: 35.0)),
-                              Text("Ph: ",
-                                  style: TextStyle(
-                                      color: Colors.green, fontSize: 25.0),
-                                  textAlign: TextAlign.center),
-                              Text('$ph', style: TextStyle(fontSize: 25.0)),
+                              Text('$hora',
+                                  style: TextStyle(fontSize: 25.0))
                             ],
                           ),
                           Row(
@@ -154,7 +119,7 @@ class _MonitoraState extends State<Monitora> {
                                   style: TextStyle(
                                       color: Colors.green, fontSize: 25.0),
                                   textAlign: TextAlign.center),
-                              Text('$temp' "ºC",
+                              Text('$temperatura' "ºC",
                                   style: TextStyle(fontSize: 25.0))
                             ],
                           ),
@@ -179,7 +144,7 @@ class _MonitoraState extends State<Monitora> {
                                   style: TextStyle(
                                       color: Colors.green, fontSize: 25.0),
                                   textAlign: TextAlign.center),
-                              Text('$iluminacao',
+                              Text('$luz',
                                   style: TextStyle(fontSize: 25.0))
                             ],
                           ),
@@ -188,11 +153,12 @@ class _MonitoraState extends State<Monitora> {
                               Padding(
                                   padding: EdgeInsets.only(
                                       left: 20.0, bottom: 35.0)),
-                              Text("Bomba: ",
+                              Text("Ph: ",
                                   style: TextStyle(
                                       color: Colors.green, fontSize: 25.0),
                                   textAlign: TextAlign.center),
-                              Text('$bomba', style: TextStyle(fontSize: 25.0))
+                              Text('$ph',
+                                  style: TextStyle(fontSize: 25.0))
                             ],
                           ),
                           Row(
@@ -200,25 +166,16 @@ class _MonitoraState extends State<Monitora> {
                               Padding(
                                   padding: EdgeInsets.only(
                                       left: 20.0, bottom: 35.0)),
-                              Text("Ventilação: ",
+                              Text("Ppm: ",
                                   style: TextStyle(
                                       color: Colors.green, fontSize: 25.0),
                                   textAlign: TextAlign.center),
-                              Text('$cooler', style: TextStyle(fontSize: 25.0))
+                              Text('$ppm',
+                                  style: TextStyle(fontSize: 25.0))
                             ],
                           ),
-                          Row(
-                            children: <Widget>[
-                              Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 20.0, bottom: 35.0)),
-                              Text("Nível de água: ",
-                                  style: TextStyle(
-                                      color: Colors.green, fontSize: 25.0),
-                                  textAlign: TextAlign.center),
-                              Text('$nivel', style: TextStyle(fontSize: 25.0))
-                            ],
-                          ), //Valor Nome//Valor Nome
+
+
                         ],
                       ),
                     );
